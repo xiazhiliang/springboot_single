@@ -11,8 +11,8 @@ spring:
       pool:
          max-idle: 100
          max-total: 600
-         max-wait: 1000
-    timeout: 3000
+         max-wait: 1000ms
+    timeout: 3000ms
 
 server:
   server.context-path: /
