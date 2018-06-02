@@ -6,7 +6,7 @@ server:
 
 datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/lottery_base?useUnicode=true&amp;characterEncoding=utf-8
+    url: jdbc:mysql://127.0.0.1:3306/app_put?useUnicode=true&amp;characterEncoding=utf-8
     username: caipiao
     password: wgf%^F87qew
 

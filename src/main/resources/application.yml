@@ -22,13 +22,27 @@ server:
 
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.16.10.210:3306/lottery_base?useUnicode=true&amp;characterEncoding=utf-8
+    url: jdbc:mysql://172.16.10.210:3306/app_put?useUnicode=true&amp;characterEncoding=utf-8
     username: caipiao
     password: F%46tff%^#@e
 
   cache:
     redis:
       namespace: comment
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: test
+      password: 1234qwer
+    elasticsearch:
+      cluster-nodes: localhost:9300
+#      properties:
+#        http.enabled : true
+#        host: localhost
+#        port: 9300
+      repositories:
+        enabled: true
 
 # MyBatis
 mybatis:
