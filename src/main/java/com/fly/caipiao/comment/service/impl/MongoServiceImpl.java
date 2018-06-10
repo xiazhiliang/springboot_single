@@ -1,6 +1,6 @@
 package com.fly.caipiao.comment.service.impl;
 
-import com.fly.caipiao.comment.entity.UserEntity;
+import com.fly.caipiao.comment.entity.mongo.UserEntity;
 import com.fly.caipiao.comment.service.MongoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

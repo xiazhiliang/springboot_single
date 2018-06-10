@@ -1,8 +1,9 @@
 package com.fly.caipiao.comment.web.controller;
 
 import com.fly.caipiao.comment.entity.PutUser;
+import com.fly.caipiao.comment.framework.response.ApiResult;
+import com.fly.caipiao.comment.framework.response.ResponseData;
 import com.fly.caipiao.comment.service.PutUserService;
-import com.fly.caipiao.comment.web.vo.ApiResultVO;
 import com.fly.caipiao.comment.web.vo.request.LoginRequestVO;
 import com.fly.caipiao.comment.web.vo.request.NicknameRequestVO;
 import com.fly.caipiao.comment.web.vo.request.PwdRequestVO;
@@ -36,11 +37,11 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public ApiResultVO register(@RequestBody @Valid RegisterRequestVO requestVO){
+    public ResponseData register(@RequestBody @Valid RegisterRequestVO requestVO){
         PutUser user = new PutUser();
         BeanUtils.copyProperties(requestVO,user);
         userService.register(user);
-        return new ApiResultVO();
+        return ApiResult.success();
     }
 
     /**
@@ -49,11 +50,9 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ApiResultVO login(@RequestBody @Valid LoginRequestVO requestVO){
+    public ResponseData login(@RequestBody @Valid LoginRequestVO requestVO){
         LoginResponseVO responseVO = userService.login(requestVO.getUsername(),requestVO.getPassword());
-        ApiResultVO resultVO = new ApiResultVO();
-        resultVO.setData(responseVO);
-        return resultVO;
+        return ApiResult.success(responseVO);
     }
 
     /**
@@ -62,9 +61,9 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/updatePwd",method = RequestMethod.POST)
-    public ApiResultVO updatePwd(@RequestBody @Valid PwdRequestVO requestVO){
+    public ResponseData updatePwd(@RequestBody @Valid PwdRequestVO requestVO){
         userService.updatePwd(requestVO.getUserId(),requestVO.getOldPassword(),requestVO.getNewPassword());
-        return new ApiResultVO();
+        return ApiResult.success();
     }
 
     /**
@@ -73,8 +72,8 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/updateNickname",method = RequestMethod.POST)
-    public ApiResultVO updateNickname(@RequestBody @Valid NicknameRequestVO requestVO){
+    public ResponseData updateNickname(@RequestBody @Valid NicknameRequestVO requestVO){
         userService.updateNickname(requestVO.getUserId(),requestVO.getNickname());
-        return new ApiResultVO();
+        return ApiResult.success();
     }
 }

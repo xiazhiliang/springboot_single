@@ -1,6 +1,6 @@
 package com.fly.caipiao.comment.service;
 
-import com.fly.caipiao.comment.entity.UserEntity;
+import com.fly.caipiao.comment.entity.mongo.UserEntity;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;

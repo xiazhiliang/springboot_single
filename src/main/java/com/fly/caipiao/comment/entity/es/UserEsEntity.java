@@ -1,4 +1,4 @@
-package com.fly.caipiao.comment.entity;
+package com.fly.caipiao.comment.entity.es;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -30,7 +30,7 @@ public class UserEsEntity {
     private Integer age;
     @Field(store=true,type=FieldType.Text)
     private String about;
-    @Field(store=true,type=FieldType.Text)
+    @Field(store=true,type=FieldType.Text,fielddata = true)
     private List<String> interests;
     @Field(store=true,type=FieldType.Text)
     private String address;

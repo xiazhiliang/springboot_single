@@ -1,5 +1,6 @@
 package com.fly.caipiao.comment.dao;
-import com.fly.caipiao.comment.entity.UserEsEntity;
+
+import com.fly.caipiao.comment.entity.es.UserEsEntity;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,7 @@
 package com.fly.caipiao.comment.web.vo;
 
-import com.fly.caipiao.comment.entity.UserEsEntity;
+import com.fly.caipiao.comment.entity.es.UserEsEntity;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @description ${TODO}
  **/
 
+@Document(indexName = "user_index",type="user")
 public class UserVO {
     private Long id;
     private String firstName;

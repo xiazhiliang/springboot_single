@@ -1,8 +1,21 @@
+
+server:
+  server.context-path: /
+  port: 8080
+  session-timeout: 60
+  tomcat.uri-encoding: UTF-8
+
+datasource:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://172.16.10.210:3306/app_put?useUnicode=true&amp;characterEncoding=utf-8
+  username: caipiao
+  password: F%46tff%^#@e
+
 spring:
   application:
     name: /
   profiles:
-    active: test210
+    active: localhost
   redis:
     cluster:
       max-redirects: 3
@@ -13,19 +26,6 @@ spring:
          max-total: 600
          max-wait: 1000ms
     timeout: 3000ms
-
-server:
-  server.context-path: /
-  port: 8080
-  session-timeout: 60
-  tomcat.uri-encoding: UTF-8
-
-  datasource:
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.16.10.210:3306/app_put?useUnicode=true&amp;characterEncoding=utf-8
-    username: caipiao
-    password: F%46tff%^#@e
-
   cache:
     redis:
       namespace: comment

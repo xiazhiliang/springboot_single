@@ -1,4 +1,4 @@
-package com.fly.caipiao.comment.entity;
+package com.fly.caipiao.comment.entity.mongo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

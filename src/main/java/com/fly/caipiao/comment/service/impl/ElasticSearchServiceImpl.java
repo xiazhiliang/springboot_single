@@ -1,16 +1,23 @@
 package com.fly.caipiao.comment.service.impl;
 
 import com.fly.caipiao.comment.dao.UserElasticsearchRepository;
-import com.fly.caipiao.comment.entity.UserEsEntity;
-import com.fly.caipiao.comment.service.EsTestService;
+import com.fly.caipiao.comment.entity.es.UserEsEntity;
+import com.fly.caipiao.comment.service.ElasticSearchService;
+import com.fly.caipiao.comment.web.vo.UserResponseVO;
 import com.fly.caipiao.comment.web.vo.UserVO;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
@@ -29,10 +36,10 @@ import java.util.stream.Collectors;
  * @description ${TODO}
  **/
 
-@Service("esTestService")
-public class EsTestServiceImpl implements EsTestService {
+@Service("elasticSearchService")
+public class ElasticSearchServiceImpl implements ElasticSearchService {
     @Autowired
-    private ElasticsearchTemplate template;
+    private ElasticsearchTemplate elasticsearchTemplate;
     @Autowired
     private UserElasticsearchRepository repository;
 
@@ -69,7 +76,7 @@ public class EsTestServiceImpl implements EsTestService {
                 .withQuery(builder).
                         withHighlightFields(new HighlightBuilder.Field("about")).
                         build();
-        AggregatedPage<UserVO> page = template.queryForPage(query, UserVO.class, new SearchResultMapper() {
+        AggregatedPage<UserVO> page = elasticsearchTemplate.queryForPage(query, UserVO.class, new SearchResultMapper() {
             @Override
             public <T> AggregatedPage<T> mapResults(SearchResponse searchResponse, Class<T> aClass, Pageable pageable) {
                 List<UserVO> chunk = new ArrayList<>();
@@ -115,23 +122,30 @@ public class EsTestServiceImpl implements EsTestService {
     }
 
     @Override
-    public List<UserVO> listConditions() {
-        MatchQueryBuilder builder = QueryBuilders.matchQuery("lastName","smith");
-//        List<SortBuilder> sorts = SortBuilder.buildSort();
-        RangeQueryBuilder filter = QueryBuilders.rangeQuery("age").gt(30);
+    public List<UserResponseVO> listConditionsAggregations() {
+        TermsAggregationBuilder builder = AggregationBuilders.terms("interests").field("interests");
         SearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(builder)
-                .withQuery(filter)
-                .withHighlightFields(new HighlightBuilder.Field("about"))
+                .withQuery(QueryBuilders.matchQuery("lastName","smith"))  // 此处条件不生效
+                .withFilter(QueryBuilders.matchQuery("lastName","smith"))  // 此处条件不生效
+                .addAggregation(builder)
                 .build();
-        HighlightBuilder.Field field = new HighlightBuilder.Field("about");
-        Iterable<UserEsEntity>  iterable = repository.search(query);
-        List<UserEsEntity> list = new ArrayList<>();
-        Iterator<UserEsEntity> iterator = iterable.iterator();
-        while (iterator.hasNext())
-        {
-            list.add(iterator.next());
+
+        Aggregations aggregations = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse response) {
+                return response.getAggregations();
+            }
+        });
+
+        List<UserResponseVO> list = new ArrayList<>();
+        Terms terms = aggregations.get("interests");
+        Iterator<Terms.Bucket> iterator = (Iterator<Terms.Bucket>) terms
+                .getBuckets().iterator();
+        while (iterator.hasNext()) {
+            MultiBucketsAggregation.Bucket bucket = iterator.next();
+            UserResponseVO user = new UserResponseVO((String) bucket.getKey(), (int) bucket.getDocCount());
+            list.add(user);
         }
-        return list.stream().map(item-> new UserVO(item)).collect(Collectors.toList());
+        return list;
     }
 }
